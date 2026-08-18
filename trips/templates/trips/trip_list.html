@@ -1,0 +1,135 @@
+{% extends "trips/base.html" %}
+
+
+{% block title %}
+    Мои поездки
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>
+            Мои поездки
+        </h1>
+
+        <p class="subtitle">
+            Планируйте и управляйте своими путешествиями
+        </p>
+    </div>
+
+    <a
+        href="{% url 'trip_create' %}"
+        class="button"
+    >
+        + Добавить поездку
+    </a>
+
+</div>
+
+
+{% if trips %}
+
+    <div class="trip-grid">
+
+        {% for trip in trips %}
+
+            <article class="trip-card">
+
+                <div class="trip-card-header">
+
+                    <h2>
+                        {{ trip.title }}
+                    </h2>
+
+                </div>
+
+
+                <div class="trip-info">
+
+                    <p>
+                        <strong>Страна:</strong>
+                        {{ trip.country }}
+                    </p>
+
+
+                    {% if trip.city %}
+
+                        <p>
+                            <strong>Город:</strong>
+                            {{ trip.city }}
+                        </p>
+
+                    {% endif %}
+
+
+                    <p>
+                        <strong>Даты:</strong>
+
+                        {{ trip.start_date|date:"d.m.Y" }}
+
+                        —
+
+                        {{ trip.end_date|date:"d.m.Y" }}
+                    </p>
+
+
+                    <p>
+                        <strong>Бюджет:</strong>
+
+                        {{ trip.budget }} ₽
+                    </p>
+
+                </div>
+
+
+                <div class="trip-actions">
+
+                    <a
+                        href="{% url 'trip_detail' trip.pk %}"
+                        class="button"
+                    >
+                        Подробнее
+                    </a>
+
+                    <a
+                        href="{% url 'trip_update' trip.pk %}"
+                        class="button button-secondary"
+                    >
+                        Изменить
+                    </a>
+
+                </div>
+
+            </article>
+
+        {% endfor %}
+
+    </div>
+
+{% else %}
+
+    <div class="empty-state">
+
+        <h2>
+            Пока нет поездок
+        </h2>
+
+        <p>
+            Добавьте свою первую поездку.
+        </p>
+
+        <a
+            href="{% url 'trip_create' %}"
+            class="button"
+        >
+            Добавить поездку
+        </a>
+
+    </div>
+
+{% endif %}
+
+{% endblock %}

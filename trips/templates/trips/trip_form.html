@@ -1,0 +1,189 @@
+{% extends "trips/base.html" %}
+
+
+{% block title %}
+    {{ page_title }}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="form-container">
+
+    <div class="form-header">
+
+        <h1>
+            {{ page_title }}
+        </h1>
+
+        <p>
+            Заполните информацию о поездке.
+        </p>
+
+    </div>
+
+
+    <form
+        method="post"
+        class="trip-form"
+    >
+
+        {% csrf_token %}
+
+
+        {% if form.non_field_errors %}
+
+            <div class="form-errors">
+
+                {{ form.non_field_errors }}
+
+            </div>
+
+        {% endif %}
+
+
+        <div class="form-group">
+
+            <label for="{{ form.title.id_for_label }}">
+                Название поездки
+            </label>
+
+            {{ form.title }}
+
+            {% if form.title.errors %}
+
+                <div class="field-error">
+                    {{ form.title.errors }}
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label for="{{ form.country.id_for_label }}">
+                    Страна
+                </label>
+
+                {{ form.country }}
+
+                {% if form.country.errors %}
+
+                    <div class="field-error">
+                        {{ form.country.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="{{ form.city.id_for_label }}">
+                    Город
+                </label>
+
+                {{ form.city }}
+
+                {% if form.city.errors %}
+
+                    <div class="field-error">
+                        {{ form.city.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label for="{{ form.start_date.id_for_label }}">
+                    Дата начала
+                </label>
+
+                {{ form.start_date }}
+
+                {% if form.start_date.errors %}
+
+                    <div class="field-error">
+                        {{ form.start_date.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="{{ form.end_date.id_for_label }}">
+                    Дата окончания
+                </label>
+
+                {{ form.end_date }}
+
+                {% if form.end_date.errors %}
+
+                    <div class="field-error">
+                        {{ form.end_date.errors }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="{{ form.budget.id_for_label }}">
+                Бюджет, ₽
+            </label>
+
+            {{ form.budget }}
+
+            {% if form.budget.errors %}
+
+                <div class="field-error">
+                    {{ form.budget.errors }}
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <button
+                type="submit"
+                class="button"
+            >
+                {{ button_text }}
+            </button>
+
+            <a
+                href="{% url 'trip_list' %}"
+                class="button button-secondary"
+            >
+                Отмена
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

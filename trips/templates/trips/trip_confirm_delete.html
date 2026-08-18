@@ -1,0 +1,55 @@
+{% extends "trips/base.html" %}
+
+
+{% block title %}
+    Удаление поездки
+{% endblock %}
+
+
+{% block content %}
+
+<div class="confirm-card">
+
+    <h1>
+        Удалить поездку?
+    </h1>
+
+
+    <p>
+        Вы действительно хотите удалить поездку
+        <strong>«{{ trip.title }}»</strong>?
+    </p>
+
+
+    <p class="warning">
+        Это действие нельзя отменить.
+    </p>
+
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <div class="form-actions">
+
+            <button
+                type="submit"
+                class="button button-danger"
+            >
+                Да, удалить
+            </button>
+
+            <a
+                href="{% url 'trip_detail' trip.pk %}"
+                class="button button-secondary"
+            >
+                Отмена
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

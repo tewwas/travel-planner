@@ -1,0 +1,102 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}
+            Планировщик путешествий
+        {% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'trips/style.css' %}"
+    >
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="container header-inner">
+
+        <a
+            href="{% url 'trip_list' %}"
+            class="logo"
+        >
+            Travel Planner
+        </a>
+
+        <nav class="navigation">
+
+            <a href="{% url 'trip_list' %}">
+                Все поездки
+            </a>
+
+            <a
+                href="{% url 'trip_create' %}"
+                class="button button-small"
+            >
+                + Добавить поездку
+            </a>
+
+            <a href="/admin/">
+                Админ-панель
+            </a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+<main class="main">
+
+    <div class="container">
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="message">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+</main>
+
+
+<footer class="footer">
+
+    <div class="container">
+
+        <p>
+            Планировщик путешествий © 2026
+        </p>
+
+    </div>
+
+</footer>
+
+</body>
+
+</html>

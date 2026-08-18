@@ -1,0 +1,143 @@
+{% extends "trips/base.html" %}
+
+
+{% block title %}
+    {{ trip.title }}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="detail-card">
+
+    <div class="detail-header">
+
+        <div>
+
+            <p class="detail-label">
+                Поездка
+            </p>
+
+            <h1>
+                {{ trip.title }}
+            </h1>
+
+        </div>
+
+    </div>
+
+
+    <div class="detail-info">
+
+        <div class="detail-row">
+
+            <span>
+                Страна
+            </span>
+
+            <strong>
+                {{ trip.country }}
+            </strong>
+
+        </div>
+
+
+        {% if trip.city %}
+
+            <div class="detail-row">
+
+                <span>
+                    Город
+                </span>
+
+                <strong>
+                    {{ trip.city }}
+                </strong>
+
+            </div>
+
+        {% endif %}
+
+
+        <div class="detail-row">
+
+            <span>
+                Дата начала
+            </span>
+
+            <strong>
+                {{ trip.start_date|date:"d.m.Y" }}
+            </strong>
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span>
+                Дата окончания
+            </span>
+
+            <strong>
+                {{ trip.end_date|date:"d.m.Y" }}
+            </strong>
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span>
+                Бюджет
+            </span>
+
+            <strong>
+                {{ trip.budget }} ₽
+            </strong>
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span>
+                Добавлено
+            </span>
+
+            <strong>
+                {{ trip.created_at|date:"d.m.Y H:i" }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="detail-actions">
+
+        <a
+            href="{% url 'trip_update' trip.pk %}"
+            class="button"
+        >
+            Редактировать
+        </a>
+
+        <a
+            href="{% url 'trip_delete' trip.pk %}"
+            class="button button-danger"
+        >
+            Удалить
+        </a>
+
+        <a
+            href="{% url 'trip_list' %}"
+            class="button button-secondary"
+        >
+            Назад к списку
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}
