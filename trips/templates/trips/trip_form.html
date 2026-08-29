@@ -1,5 +1,7 @@
 {% extends "trips/base.html" %}
 
+{% load static %}
+
 
 {% block title %}
     {{ page_title }}
@@ -34,9 +36,7 @@
         {% if form.non_field_errors %}
 
             <div class="form-errors">
-
                 {{ form.non_field_errors }}
-
             </div>
 
         {% endif %}
@@ -185,5 +185,101 @@
     </form>
 
 </div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const countrySelect = document.getElementById(
+            "{{ form.country.id_for_label }}"
+        );
+
+        const citySelect = document.getElementById(
+            "{{ form.city.id_for_label }}"
+        );
+
+        countrySelect.addEventListener("change", function () {
+            const countryId = this.value;
+
+            citySelect.innerHTML = "";
+
+            if (!countryId) {
+                const option = document.createElement("option");
+
+                option.value = "";
+                option.textContent = "Сначала выберите страну";
+
+                citySelect.appendChild(option);
+
+                citySelect.disabled = true;
+
+                return;
+            }
+
+            citySelect.disabled = true;
+
+            const loadingOption = document.createElement("option");
+
+            loadingOption.value = "";
+            loadingOption.textContent = "Загрузка городов...";
+
+            citySelect.appendChild(loadingOption);
+
+
+            fetch(
+                "{% url 'cities_by_country' %}?country_id=" + countryId
+            )
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error(
+                            "Не удалось загрузить города"
+                        );
+                    }
+
+                    return response.json();
+                })
+                .then(function (data) {
+                    citySelect.innerHTML = "";
+
+                    const defaultOption = document.createElement(
+                        "option"
+                    );
+
+                    defaultOption.value = "";
+                    defaultOption.textContent = "Выберите город";
+
+                    citySelect.appendChild(defaultOption);
+
+
+                    data.cities.forEach(function (city) {
+                        const option = document.createElement(
+                            "option"
+                        );
+
+                        option.value = city.id;
+                        option.textContent = city.name;
+
+                        citySelect.appendChild(option);
+                    });
+
+                    citySelect.disabled = data.cities.length === 0;
+                })
+                .catch(function () {
+                    citySelect.innerHTML = "";
+
+                    const errorOption = document.createElement(
+                        "option"
+                    );
+
+                    errorOption.value = "";
+                    errorOption.textContent =
+                        "Не удалось загрузить города";
+
+                    citySelect.appendChild(errorOption);
+
+                    citySelect.disabled = true;
+                });
+        });
+    });
+</script>
 
 {% endblock %}
