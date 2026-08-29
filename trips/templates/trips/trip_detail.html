@@ -12,16 +12,16 @@
 
     <div class="detail-header">
 
-        <div>
+        <p class="detail-label">
+            Поездка
+        </p>
 
-            <p class="detail-label">
-                Поездка
-            </p>
+        <h1>
+            {{ trip.title }}
+        </h1>
 
-            <h1>
-                {{ trip.title }}
-            </h1>
-
+        <div class="trip-status">
+            {{ trip.trip_status }}
         </div>
 
     </div>
@@ -31,39 +31,29 @@
 
         <div class="detail-row">
 
-            <span>
-                Страна
-            </span>
+            <span>Страна</span>
 
             <strong>
-                {{ trip.country }}
+                {{ trip.country.name }}
             </strong>
 
         </div>
 
 
-        {% if trip.city %}
+        <div class="detail-row">
 
-            <div class="detail-row">
+            <span>Город</span>
 
-                <span>
-                    Город
-                </span>
+            <strong>
+                {{ trip.city.name }}
+            </strong>
 
-                <strong>
-                    {{ trip.city }}
-                </strong>
-
-            </div>
-
-        {% endif %}
+        </div>
 
 
         <div class="detail-row">
 
-            <span>
-                Дата начала
-            </span>
+            <span>Дата начала</span>
 
             <strong>
                 {{ trip.start_date|date:"d.m.Y" }}
@@ -74,9 +64,7 @@
 
         <div class="detail-row">
 
-            <span>
-                Дата окончания
-            </span>
+            <span>Дата окончания</span>
 
             <strong>
                 {{ trip.end_date|date:"d.m.Y" }}
@@ -87,12 +75,10 @@
 
         <div class="detail-row">
 
-            <span>
-                Бюджет
-            </span>
+            <span>Продолжительность</span>
 
             <strong>
-                {{ trip.budget }} ₽
+                {{ trip.duration_days }} дн.
             </strong>
 
         </div>
@@ -100,12 +86,10 @@
 
         <div class="detail-row">
 
-            <span>
-                Добавлено
-            </span>
+            <span>Бюджет</span>
 
             <strong>
-                {{ trip.created_at|date:"d.m.Y H:i" }}
+                {{ trip.budget }} ₽
             </strong>
 
         </div>
@@ -113,27 +97,144 @@
     </div>
 
 
+    <section class="packing-section">
+
+        <div class="packing-header">
+
+            <div>
+
+                <p class="detail-label">
+                    Подготовка
+                </p>
+
+                <h2>
+                    Что взять с собой
+                </h2>
+
+            </div>
+
+            <div class="packing-progress">
+                {{ packed_items }} / {{ total_items }}
+            </div>
+
+        </div>
+
+
+        <form
+            method="post"
+            action="{% url 'packing_item_add' trip.pk %}"
+            class="packing-form">
+
+            {% csrf_token %}
+
+            <input
+                type="text"
+                name="name"
+                placeholder="Например, паспорт"
+                maxlength="150"
+                required>
+
+            <button
+                type="submit"
+                class="button">
+                Добавить
+            </button>
+
+        </form>
+
+
+        {% if packing_items %}
+
+            <div class="packing-list">
+
+                {% for item in packing_items %}
+
+                    <div
+                        class="packing-item {% if item.is_packed %}is-packed{% endif %}">
+
+                        <form
+                            method="post"
+                            action="{% url 'packing_item_toggle' item.pk %}"
+                            class="packing-toggle-form">
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="packing-check"
+                                aria-label="Отметить {{ item.name }}">
+                                {% if item.is_packed %}
+                                    <span>✓</span>
+                                {% endif %}
+                            </button>
+
+                        </form>
+
+
+                        <span class="packing-name">
+                            {{ item.name }}
+                        </span>
+
+
+                        <form
+                            method="post"
+                            action="{% url 'packing_item_delete' item.pk %}"
+                            class="packing-delete-form">
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="packing-delete"
+                                aria-label="Удалить {{ item.name }}">
+                                ×
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="packing-empty">
+
+                <p>
+                    Пока ничего не добавлено.
+                </p>
+
+                <span>
+                    Добавьте вещи, которые нужно взять с собой.
+                </span>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
     <div class="detail-actions">
 
         <a
             href="{% url 'trip_update' trip.pk %}"
-            class="button"
-        >
+            class="button">
             Редактировать
         </a>
 
         <a
             href="{% url 'trip_delete' trip.pk %}"
-            class="button button-danger"
-        >
+            class="button button-danger">
             Удалить
         </a>
 
         <a
             href="{% url 'trip_list' %}"
-            class="button button-secondary"
-        >
-            Назад к списку
+            class="button button-secondary">
+            Все поездки
         </a>
 
     </div>

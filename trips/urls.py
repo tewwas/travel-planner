@@ -39,4 +39,22 @@ urlpatterns = [
         views.cities_by_country,
         name="cities_by_country",
     ),
+
+    path(
+        "trips/<int:pk>/packing/add/",
+        views.packing_item_add,
+        name="packing_item_add",
+    ),
+
+    path(
+        "packing/<int:pk>/toggle/",
+        views.packing_item_toggle,
+        name="packing_item_toggle",
+    ),
+
+    path(
+        "packing/<int:pk>/delete/",
+        views.packing_item_delete,
+        name="packing_item_delete",
+    ),
 ]

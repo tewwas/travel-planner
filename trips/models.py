@@ -95,6 +95,27 @@ class Trip(models.Model):
     def duration_days(self):
         return (self.end_date - self.start_date).days + 1
 
+    @property
+    def trip_status(self):
+        from datetime import date
+
+        today = date.today()
+
+        if today < self.start_date:
+            days_left = (self.start_date - today).days
+
+            if days_left == 1:
+                return "Завтра"
+
+            return f"Через {days_left} дней"
+
+        if today > self.end_date:
+            return "Поездка закончена"
+
+        current_day = (today - self.start_date).days + 1
+
+        return f"День {current_day} из {self.duration_days}"
+
 
 class PackingItem(models.Model):
     trip = models.ForeignKey(
