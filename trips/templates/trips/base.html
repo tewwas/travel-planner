@@ -8,74 +8,59 @@
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+        content="width=device-width, initial-scale=1.0">
 
     <title>
         {% block title %}
-            Планировщик путешествий
+            Travel Planner
         {% endblock %}
     </title>
 
     <link
         rel="stylesheet"
-        href="{% static 'trips/style.css' %}"
-    >
+        href="{% static 'trips/style.css' %}">
 </head>
 
 <body>
 
 <header class="header">
-
     <div class="container header-inner">
-
         <a
             href="{% url 'trip_list' %}"
-            class="logo"
-        >
+            class="logo">
             Travel Planner
         </a>
 
         <nav class="navigation">
-
-            <a href="{% url 'trip_list' %}">
-                Все поездки
+            <a
+                href="{% url 'trip_list' %}"
+                class="navigation-link">
+                Мои поездки
             </a>
 
             <a
                 href="{% url 'trip_create' %}"
-                class="button button-small"
-            >
-                + Добавить поездку
-            </a>
-
-            <a href="/admin/">
-                Админ-панель
+                class="button button-small">
+                Новая поездка
             </a>
 
         </nav>
-
     </div>
 
 </header>
 
-
 <main class="main">
-
     <div class="container">
-
         {% if messages %}
-
-            {% for message in messages %}
-
-                <div class="message">
-                    {{ message }}
-                </div>
-
-            {% endfor %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
 
         {% endif %}
-
 
         {% block content %}
         {% endblock %}
@@ -86,15 +71,11 @@
 
 
 <footer class="footer">
-
     <div class="container">
-
         <p>
-            Планировщик путешествий © 2026
+            Travel Planner
         </p>
-
     </div>
-
 </footer>
 
 </body>

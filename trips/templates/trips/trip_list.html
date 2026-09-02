@@ -2,133 +2,118 @@
 
 
 {% block title %}
-    Мои поездки
+    Мои поездки — Travel Planner
 {% endblock %}
 
 
 {% block content %}
 
-<div class="page-header">
+<section class="page-intro">
 
     <div>
+        <p class="eyebrow">
+            Travel Planner
+        </p>
         <h1>
             Мои поездки
         </h1>
-
         <p class="subtitle">
-            Планируйте и управляйте своими путешествиями
+            Все ваши путешествия в одном месте.
         </p>
     </div>
 
     <a
         href="{% url 'trip_create' %}"
-        class="button"
-    >
-        + Добавить поездку
+        class="button">
+        Новая поездка
     </a>
 
-</div>
+</section>
 
 
 {% if trips %}
 
-    <div class="trip-grid">
+    <section class="trip-grid">
 
         {% for trip in trips %}
 
             <article class="trip-card">
+                <div class="trip-card-top">
+                    <span class="trip-status">
+                        {{ trip.trip_status }}
+                    </span>
+                </div>
 
-                <div class="trip-card-header">
 
+                <div class="trip-card-main">
                     <h2>
                         {{ trip.title }}
                     </h2>
-
+                    <p class="trip-location">
+                        {{ trip.country.name }},
+                        {{ trip.city.name }}
+                    </p>
                 </div>
 
 
-                <div class="trip-info">
+                <div class="trip-dates">
+                    <div>
+                        <span class="trip-meta-label">
+                            Начало
+                        </span>
+                        <strong>
+                            {{ trip.start_date|date:"d.m.Y" }}
+                        </strong>
+                    </div>
 
-                    <p>
-                        <strong>Страна:</strong>
-                        {{ trip.country }}
-                    </p>
-
-
-                    {% if trip.city %}
-
-                        <p>
-                            <strong>Город:</strong>
-                            {{ trip.city }}
-                        </p>
-
-                    {% endif %}
-
-
-                    <p>
-                        <strong>Даты:</strong>
-
-                        {{ trip.start_date|date:"d.m.Y" }}
-
-                        —
-
-                        {{ trip.end_date|date:"d.m.Y" }}
-                    </p>
-
-
-                    <p>
-                        <strong>Бюджет:</strong>
-
-                        {{ trip.budget }} ₽
-                    </p>
-
+                    <div>
+                        <span class="trip-meta-label">
+                            Окончание
+                        </span>
+                        <strong>
+                            {{ trip.end_date|date:"d.m.Y" }}
+                        </strong>
+                    </div>
                 </div>
 
-
-                <div class="trip-actions">
-
+                <div class="trip-card-footer">
+                    <span class="trip-duration">
+                        {{ trip.duration_days }} дн.
+                    </span>
                     <a
                         href="{% url 'trip_detail' trip.pk %}"
-                        class="button"
-                    >
-                        Подробнее
+                        class="card-link">
+                        Открыть поездку
+                        <span aria-hidden="true">→</span>
                     </a>
-
-                    <a
-                        href="{% url 'trip_update' trip.pk %}"
-                        class="button button-secondary"
-                    >
-                        Изменить
-                    </a>
-
                 </div>
-
             </article>
 
         {% endfor %}
 
-    </div>
+    </section>
 
 {% else %}
 
-    <div class="empty-state">
-
-        <h2>
-            Пока нет поездок
-        </h2>
-
-        <p>
-            Добавьте свою первую поездку.
-        </p>
-
-        <a
-            href="{% url 'trip_create' %}"
-            class="button"
-        >
-            Добавить поездку
-        </a>
-
-    </div>
+    <section class="empty-state">
+        <div class="empty-state-content">
+            <p class="eyebrow">
+                Пока пусто
+            </p>
+            <h2>
+                Запланируйте первое путешествие
+            </h2>
+            <p>
+                Добавьте страну, город и даты поездки,
+                чтобы начать планирование.
+            </p>
+            <a
+                href="{% url 'trip_create' %}"
+                class="button">
+                Создать поездку
+            </a>
+        </div>
+    </section>
 
 {% endif %}
 
