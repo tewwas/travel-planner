@@ -171,18 +171,46 @@ def packing_item_add(request, pk):
         pk=pk,
     )
 
-    if request.method == "POST":
-        name = request.POST.get("name", "").strip()
-
-        if name:
-            PackingItem.objects.create(
-                trip=trip,
-                name=name,
-            )
-
+    if request.method != "POST":
         return redirect(
             "trip_detail",
             pk=trip.pk,
+        )
+
+    name = request.POST.get(
+        "name",
+        "",
+    ).strip()
+
+    if not name:
+        return redirect(
+            "trip_detail",
+            pk=trip.pk,
+        )
+
+    item = PackingItem.objects.create(
+        trip=trip,
+        name=name,
+    )
+
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+
+        packing_items = trip.packing_items.all()
+
+        return JsonResponse(
+            {
+                "success": True,
+                "item": {
+                    "id": item.pk,
+                    "name": item.name,
+                    "toggle_url": f"/packing/{item.pk}/toggle/",
+                    "delete_url": f"/packing/{item.pk}/delete/",
+                },
+                "packed_items": packing_items.filter(
+                    is_packed=True
+                ).count(),
+                "total_items": packing_items.count(),
+            }
         )
 
     return redirect(
@@ -198,7 +226,26 @@ def packing_item_toggle(request, pk):
     )
 
     item.is_packed = not item.is_packed
-    item.save(update_fields=["is_packed"])
+
+    item.save(
+        update_fields=["is_packed"]
+    )
+
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+
+        trip = item.trip
+        packing_items = trip.packing_items.all()
+
+        return JsonResponse(
+            {
+                "success": True,
+                "is_packed": item.is_packed,
+                "packed_items": packing_items.filter(
+                    is_packed=True
+                ).count(),
+                "total_items": packing_items.count(),
+            }
+        )
 
     return redirect(
         "trip_detail",
@@ -212,9 +259,30 @@ def packing_item_delete(request, pk):
         pk=pk,
     )
 
-    trip_pk = item.trip.pk
+    trip = item.trip
+    trip_pk = trip.pk
+
+    if request.method != "POST":
+        return redirect(
+            "trip_detail",
+            pk=trip_pk,
+        )
 
     item.delete()
+
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+
+        packing_items = trip.packing_items.all()
+
+        return JsonResponse(
+            {
+                "success": True,
+                "packed_items": packing_items.filter(
+                    is_packed=True
+                ).count(),
+                "total_items": packing_items.count(),
+            }
+        )
 
     return redirect(
         "trip_detail",

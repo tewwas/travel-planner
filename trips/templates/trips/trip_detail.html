@@ -30,68 +30,33 @@
     <div class="detail-info">
 
         <div class="detail-row">
-
             <span>Страна</span>
-
-            <strong>
-                {{ trip.country.name }}
-            </strong>
-
+            <strong>{{ trip.country.name }}</strong>
         </div>
 
-
         <div class="detail-row">
-
             <span>Город</span>
-
-            <strong>
-                {{ trip.city.name }}
-            </strong>
-
+            <strong>{{ trip.city.name }}</strong>
         </div>
 
-
         <div class="detail-row">
-
             <span>Дата начала</span>
-
-            <strong>
-                {{ trip.start_date|date:"d.m.Y" }}
-            </strong>
-
+            <strong>{{ trip.start_date|date:"d.m.Y" }}</strong>
         </div>
 
-
         <div class="detail-row">
-
             <span>Дата окончания</span>
-
-            <strong>
-                {{ trip.end_date|date:"d.m.Y" }}
-            </strong>
-
+            <strong>{{ trip.end_date|date:"d.m.Y" }}</strong>
         </div>
 
-
         <div class="detail-row">
-
             <span>Продолжительность</span>
-
-            <strong>
-                {{ trip.duration_days }} дн.
-            </strong>
-
+            <strong>{{ trip.duration_days }} дн.</strong>
         </div>
 
-
         <div class="detail-row">
-
             <span>Бюджет</span>
-
-            <strong>
-                {{ trip.budget }} ₽
-            </strong>
-
+            <strong>{{ trip.budget }} ₽</strong>
         </div>
 
     </div>
@@ -102,7 +67,6 @@
         <div class="packing-header">
 
             <div>
-
                 <p class="detail-label">
                     Подготовка
                 </p>
@@ -110,20 +74,45 @@
                 <h2>
                     Что взять с собой
                 </h2>
-
             </div>
 
-            <div class="packing-progress">
-                {{ packed_items }} / {{ total_items }}
+            <div
+                class="packing-progress"
+                id="packing-progress">
+                <span id="packing-progress-count">
+                    {{ packed_items }} / {{ total_items }}
+                </span>
             </div>
 
+        </div>
+
+
+        <div class="packing-progress-bar">
+
+            <div
+                class="packing-progress-fill"
+                id="packing-progress-fill"
+                style="width: {% if total_items %}{{ packed_items|floatformat:0 }}{% else %}0{% endif %}0%;"
+            ></div>
+
+        </div>
+
+
+        <div
+            class="packing-complete"
+            id="packing-complete"
+            {% if not total_items or packed_items != total_items %}
+                hidden
+            {% endif %}>
+            Всё готово к поездке
         </div>
 
 
         <form
             method="post"
             action="{% url 'packing_item_add' trip.pk %}"
-            class="packing-form">
+            class="packing-form"
+            id="packing-add-form">
 
             {% csrf_token %}
 
@@ -145,12 +134,15 @@
 
         {% if packing_items %}
 
-            <div class="packing-list">
+            <div
+                class="packing-list"
+                id="packing-list">
 
                 {% for item in packing_items %}
 
                     <div
-                        class="packing-item {% if item.is_packed %}is-packed{% endif %}">
+                        class="packing-item {% if item.is_packed %}is-packed{% endif %}"
+                        data-item-id="{{ item.pk }}">
 
                         <form
                             method="post"
@@ -198,10 +190,11 @@
 
             </div>
 
-        {% else %}
 
-            <div class="packing-empty">
-
+            <div
+                class="packing-empty"
+                id="packing-empty"
+                hidden>
                 <p>
                     Пока ничего не добавлено.
                 </p>
@@ -209,7 +202,22 @@
                 <span>
                     Добавьте вещи, которые нужно взять с собой.
                 </span>
+            </div>
 
+        {% else %}
+
+            <div class="packing-list"
+                id="packing-list"></div>
+
+            <div class="packing-empty"
+                id="packing-empty">
+                <p>
+                    Пока ничего не добавлено.
+                </p>
+
+                <span>
+                    Добавьте вещи, которые нужно взять с собой.
+                </span>
             </div>
 
         {% endif %}
@@ -240,5 +248,341 @@
     </div>
 
 </div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const packingList = document.getElementById("packing-list");
+    const packingEmpty = document.getElementById("packing-empty");
+    const progressCount = document.getElementById("packing-progress-count");
+    const progressFill = document.getElementById("packing-progress-fill");
+    const packingComplete = document.getElementById("packing-complete");
+    const addForm = document.getElementById("packing-add-form");
+
+
+    function getCsrfToken(form) {
+        return form.querySelector(
+            "[name=csrfmiddlewaretoken]"
+        ).value;
+    }
+
+
+    function updateProgress(packedItems, totalItems) {
+
+        progressCount.textContent =
+            `${packedItems} / ${totalItems}`;
+
+
+        const percentage = totalItems > 0
+            ? (packedItems / totalItems) * 100
+            : 0;
+
+
+        progressFill.style.width =
+            `${percentage}%`;
+
+
+        packingComplete.hidden =
+            totalItems === 0 ||
+            packedItems !== totalItems;
+
+
+        if (totalItems === 0) {
+            packingEmpty.hidden = false;
+        } else {
+            packingEmpty.hidden = true;
+        }
+    }
+
+
+    function updateEmptyState() {
+
+        const items = packingList.querySelectorAll(
+            ".packing-item"
+        );
+
+        packingEmpty.hidden = items.length !== 0;
+    }
+
+
+    function bindToggleForm(form) {
+
+        form.addEventListener("submit", async function (event) {
+
+            event.preventDefault();
+
+            const item = form.closest(".packing-item");
+            const button = form.querySelector(".packing-check");
+
+            button.disabled = true;
+
+            try {
+
+                const response = await fetch(
+                    form.action,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "X-CSRFToken": getCsrfToken(form),
+                            "X-Requested-With": "XMLHttpRequest"
+                        },
+
+                        body: new FormData(form)
+                    }
+                );
+
+
+                if (!response.ok) {
+                    throw new Error("Ошибка сервера");
+                }
+
+
+                const data = await response.json();
+
+
+                if (data.success) {
+
+                    item.classList.toggle(
+                        "is-packed",
+                        data.is_packed
+                    );
+
+
+                    button.innerHTML = data.is_packed
+                        ? "<span>✓</span>"
+                        : "";
+
+
+                    updateProgress(
+                        data.packed_items,
+                        data.total_items
+                    );
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Не удалось изменить состояние вещи:",
+                    error
+                );
+
+            } finally {
+
+                button.disabled = false;
+            }
+        });
+    }
+
+
+    function bindDeleteForm(form) {
+
+        form.addEventListener("submit", async function (event) {
+
+            event.preventDefault();
+
+
+            const item = form.closest(".packing-item");
+            const button = form.querySelector(".packing-delete");
+
+
+            button.disabled = true;
+
+
+            try {
+
+                const response = await fetch(
+                    form.action,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "X-CSRFToken": getCsrfToken(form),
+                            "X-Requested-With": "XMLHttpRequest"
+                        },
+
+                        body: new FormData(form)
+                    }
+                );
+
+
+                if (!response.ok) {
+                    throw new Error("Ошибка сервера");
+                }
+
+
+                const data = await response.json();
+
+
+                if (data.success) {
+
+                    item.remove();
+
+
+                    updateProgress(
+                        data.packed_items,
+                        data.total_items
+                    );
+
+
+                    updateEmptyState();
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Не удалось удалить вещь:",
+                    error
+                );
+
+                button.disabled = false;
+            }
+        });
+    }
+
+
+    document
+        .querySelectorAll(".packing-toggle-form")
+        .forEach(bindToggleForm);
+
+
+    document
+        .querySelectorAll(".packing-delete-form")
+        .forEach(bindDeleteForm);
+
+
+    if (addForm) {
+
+        addForm.addEventListener("submit", async function (event) {
+
+            event.preventDefault();
+
+
+            const input = addForm.querySelector("input[name='name']");
+            const button = addForm.querySelector("button");
+
+
+            if (!input.value.trim()) {
+                return;
+            }
+
+
+            button.disabled = true;
+
+
+            try {
+
+                const response = await fetch(
+                    addForm.action,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "X-CSRFToken": getCsrfToken(addForm),
+                            "X-Requested-With": "XMLHttpRequest"
+                        },
+
+                        body: new FormData(addForm)
+                    }
+                );
+
+
+                if (!response.ok) {
+                    throw new Error("Ошибка сервера");
+                }
+
+
+                const data = await response.json();
+
+
+                if (data.success) {
+
+                    const item = document.createElement("div");
+
+                    item.className = "packing-item";
+                    item.dataset.itemId = data.item.id;
+
+
+                    item.innerHTML = `
+                        <form
+                            method="post"
+                            action="${data.item.toggle_url}"
+                            class="packing-toggle-form">
+                            <input
+                                type="hidden"
+                                name="csrfmiddlewaretoken"
+                                value="${getCsrfToken(addForm)}">
+
+                            <button
+                                type="submit"
+                                class="packing-check"
+                                aria-label="Отметить ${data.item.name}"></button>
+                        </form>
+
+                        <span class="packing-name">
+                            ${data.item.name}
+                        </span>
+
+                        <form
+                            method="post"
+                            action="${data.item.delete_url}"
+                            class="packing-delete-form">
+                            <input
+                                type="hidden"
+                                name="csrfmiddlewaretoken"
+                                value="${getCsrfToken(addForm)}">
+
+                            <button
+                                type="submit"
+                                class="packing-delete"
+                                aria-label="Удалить ${data.item.name}">
+                                ×
+                            </button>
+                        </form>
+                    `;
+
+
+                    packingList.appendChild(item);
+
+
+                    bindToggleForm(
+                        item.querySelector(".packing-toggle-form")
+                    );
+
+
+                    bindDeleteForm(
+                        item.querySelector(".packing-delete-form")
+                    );
+
+
+                    input.value = "";
+
+
+                    packingEmpty.hidden = true;
+
+
+                    updateProgress(
+                        data.packed_items,
+                        data.total_items
+                    );
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Не удалось добавить вещь:",
+                    error
+                );
+
+            } finally {
+
+                button.disabled = false;
+            }
+        });
+    }
+
+});
+</script>
 
 {% endblock %}
