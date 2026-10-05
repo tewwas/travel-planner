@@ -20,10 +20,7 @@ DEBUG = os.environ.get(
 ).lower() == "true"
 
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-]
+ALLOWED_HOSTS = ["teawasfound.pythonanywhere.com"]
 
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get(
