@@ -1,5 +1,4 @@
 {% extends "trips/base.html" %}
-
 {% load static %}
 
 
@@ -28,17 +27,15 @@
     <form
         method="post"
         class="trip-form"
-    >
+        id="trip-form">
 
         {% csrf_token %}
 
 
         {% if form.non_field_errors %}
-
             <div class="form-errors">
                 {{ form.non_field_errors }}
             </div>
-
         {% endif %}
 
 
@@ -51,11 +48,9 @@
             {{ form.title }}
 
             {% if form.title.errors %}
-
                 <div class="field-error">
                     {{ form.title.errors }}
                 </div>
-
             {% endif %}
 
         </div>
@@ -63,39 +58,72 @@
 
         <div class="form-row">
 
-            <div class="form-group">
+            <div class="form-group autocomplete-group">
 
-                <label for="{{ form.country.id_for_label }}">
+                <label for="country-autocomplete">
                     Страна
                 </label>
 
-                {{ form.country }}
+                <div class="autocomplete-wrapper">
+
+                    <input
+                        type="text"
+                        id="country-autocomplete"
+                        class="form-control"
+                        placeholder="Начните вводить страну"
+                        autocomplete="off">
+
+                    <div
+                        id="country-suggestions"
+                        class="autocomplete-suggestions"
+                    ></div>
+
+                </div>
+
+                <div class="hidden-select">
+                    {{ form.country }}
+                </div>
 
                 {% if form.country.errors %}
-
                     <div class="field-error">
                         {{ form.country.errors }}
                     </div>
-
                 {% endif %}
 
             </div>
 
 
-            <div class="form-group">
+            <div class="form-group autocomplete-group">
 
-                <label for="{{ form.city.id_for_label }}">
+                <label for="city-autocomplete">
                     Город
                 </label>
 
-                {{ form.city }}
+                <div class="autocomplete-wrapper">
+
+                    <input
+                        type="text"
+                        id="city-autocomplete"
+                        class="form-control"
+                        placeholder="Сначала выберите страну"
+                        autocomplete="off"
+                        disabled>
+
+                    <div
+                        id="city-suggestions"
+                        class="autocomplete-suggestions"
+                    ></div>
+
+                </div>
+
+                <div class="hidden-select">
+                    {{ form.city }}
+                </div>
 
                 {% if form.city.errors %}
-
                     <div class="field-error">
                         {{ form.city.errors }}
                     </div>
-
                 {% endif %}
 
             </div>
@@ -114,11 +142,9 @@
                 {{ form.start_date }}
 
                 {% if form.start_date.errors %}
-
                     <div class="field-error">
                         {{ form.start_date.errors }}
                     </div>
-
                 {% endif %}
 
             </div>
@@ -133,11 +159,9 @@
                 {{ form.end_date }}
 
                 {% if form.end_date.errors %}
-
                     <div class="field-error">
                         {{ form.end_date.errors }}
                     </div>
-
                 {% endif %}
 
             </div>
@@ -154,11 +178,9 @@
             {{ form.budget }}
 
             {% if form.budget.errors %}
-
                 <div class="field-error">
                     {{ form.budget.errors }}
                 </div>
-
             {% endif %}
 
         </div>
@@ -168,15 +190,13 @@
 
             <button
                 type="submit"
-                class="button"
-            >
+                class="button">
                 {{ button_text }}
             </button>
 
             <a
                 href="{% url 'trip_list' %}"
-                class="button button-secondary"
-            >
+                class="button button-secondary">
                 Отмена
             </a>
 
@@ -187,99 +207,617 @@
 </div>
 
 
+<style>
+
+.autocomplete-group {
+    position: relative;
+}
+
+.autocomplete-wrapper {
+    position: relative;
+}
+
+.hidden-select {
+    display: none;
+}
+
+.autocomplete-suggestions {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+
+    z-index: 1000;
+
+    max-height: 240px;
+    overflow-y: auto;
+
+    background: #ffffff;
+
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.10);
+
+    display: none;
+}
+
+.autocomplete-suggestions.active {
+    display: block;
+}
+
+.autocomplete-suggestion {
+    padding: 10px 14px;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    transition:
+        background-color 0.1s ease,
+        color 0.1s ease;
+}
+
+.autocomplete-suggestion:hover,
+.autocomplete-suggestion.active {
+    background: #f3f4f6;
+}
+
+.autocomplete-empty {
+    padding: 10px 14px;
+
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+</style>
+
+
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const countrySelect = document.getElementById(
-            "{{ form.country.id_for_label }}"
-        );
 
-        const citySelect = document.getElementById(
-            "{{ form.city.id_for_label }}"
-        );
+document.addEventListener("DOMContentLoaded", function () {
 
-        countrySelect.addEventListener("change", function () {
-            const countryId = this.value;
+    const form = document.getElementById("trip-form");
 
-            citySelect.innerHTML = "";
+    const countrySelect = document.getElementById(
+        "{{ form.country.id_for_label }}"
+    );
 
-            if (!countryId) {
-                const option = document.createElement("option");
+    const citySelect = document.getElementById(
+        "{{ form.city.id_for_label }}"
+    );
 
-                option.value = "";
-                option.textContent = "Сначала выберите страну";
+    const countryInput = document.getElementById(
+        "country-autocomplete"
+    );
 
-                citySelect.appendChild(option);
+    const cityInput = document.getElementById(
+        "city-autocomplete"
+    );
+
+    const countrySuggestions = document.getElementById(
+        "country-suggestions"
+    );
+
+    const citySuggestions = document.getElementById(
+        "city-suggestions"
+    );
+
+    let countries = [];
+    let cities = [];
+    let selectedCountry = null;
+    let selectedCity = null;
+
+    Array.from(countrySelect.options).forEach(function (option) {
+
+        if (!option.value) {
+            return;
+        }
+
+        countries.push({
+            id: option.value,
+            name: option.textContent.trim()
+        });
+
+    });
+
+    function normalize(value) {
+
+        return value
+            .trim()
+            .toLocaleLowerCase("ru");
+
+    }
+
+    function closeSuggestions(element) {
+
+        element.innerHTML = "";
+        element.classList.remove("active");
+
+    }
+
+    function showSuggestions(
+        input,
+        container,
+        items,
+        onSelect
+    ) {
+
+        container.innerHTML = "";
+
+        const query = normalize(input.value);
+
+        const filteredItems = query
+            ? items.filter(function (item) {
+
+                return normalize(item.name)
+                    .includes(query);
+
+            })
+            : items;
+
+
+        if (filteredItems.length === 0) {
+
+            const empty = document.createElement("div");
+
+            empty.className = "autocomplete-empty";
+
+            empty.textContent = "Ничего не найдено";
+
+            container.appendChild(empty);
+
+            container.classList.add("active");
+
+            return;
+
+        }
+
+
+        filteredItems.forEach(function (item) {
+
+            const suggestion = document.createElement("div");
+
+            suggestion.className = "autocomplete-suggestion";
+
+            suggestion.textContent = item.name;
+
+            suggestion.dataset.id = item.id;
+
+
+            suggestion.addEventListener(
+                "mousedown",
+                function (event) {
+
+                    event.preventDefault();
+
+                    onSelect(item);
+
+                }
+            );
+
+
+            container.appendChild(suggestion);
+
+        });
+
+
+        container.classList.add("active");
+
+    }
+
+    function selectCountry(country) {
+
+        selectedCountry = country;
+
+        countryInput.value = country.name;
+
+        countrySelect.value = country.id;
+
+        closeSuggestions(countrySuggestions);
+
+        selectedCity = null;
+
+        cityInput.value = "";
+
+        cityInput.disabled = true;
+
+        cityInput.placeholder = "Загрузка городов...";
+
+        citySelect.innerHTML = "";
+
+        citySelect.disabled = true;
+
+
+        const loadingOption = document.createElement("option");
+
+        loadingOption.value = "";
+
+        loadingOption.textContent = "Загрузка городов...";
+
+        citySelect.appendChild(loadingOption);
+
+        fetch(
+            "{% url 'cities_by_country' %}?country_id=" +
+            encodeURIComponent(country.id)
+        )
+            .then(function (response) {
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Не удалось загрузить города"
+                    );
+
+                }
+
+                return response.json();
+
+            })
+
+            .then(function (data) {
+
+                cities = data.cities || [];
+
+                citySelect.innerHTML = "";
+
+
+                const defaultOption =
+                    document.createElement("option");
+
+                defaultOption.value = "";
+
+                defaultOption.textContent =
+                    "Выберите город";
+
+                citySelect.appendChild(defaultOption);
+
+
+                cities.forEach(function (city) {
+
+                    const option =
+                        document.createElement("option");
+
+                    option.value = city.id;
+
+                    option.textContent = city.name;
+
+                    citySelect.appendChild(option);
+
+                });
+
+
+                if (cities.length > 0) {
+
+                    cityInput.disabled = false;
+
+                    cityInput.placeholder =
+                        "Начните вводить город";
+
+                    citySelect.disabled = false;
+
+                } else {
+
+                    cityInput.disabled = true;
+
+                    cityInput.placeholder =
+                        "Города не найдены";
+
+                    citySelect.disabled = true;
+
+                }
+
+                const currentCityId =
+                    "{{ form.city.value|default:'' }}";
+
+
+                if (currentCityId) {
+
+                    const existingCity =
+                        cities.find(function (city) {
+
+                            return String(city.id) ===
+                                String(currentCityId);
+
+                        });
+
+
+                    if (existingCity) {
+
+                        selectCity(existingCity);
+
+                    }
+
+                }
+
+            })
+
+            .catch(function () {
+
+                cities = [];
+
+                citySelect.innerHTML = "";
+
+                const errorOption =
+                    document.createElement("option");
+
+                errorOption.value = "";
+
+                errorOption.textContent =
+                    "Не удалось загрузить города";
+
+                citySelect.appendChild(errorOption);
+
+                cityInput.value = "";
+
+                cityInput.disabled = true;
+
+                cityInput.placeholder =
+                    "Не удалось загрузить города";
 
                 citySelect.disabled = true;
 
+            });
+
+    }
+
+    function selectCity(city) {
+
+        selectedCity = city;
+
+        cityInput.value = city.name;
+
+        citySelect.value = city.id;
+
+        closeSuggestions(citySuggestions);
+
+    }
+
+    countryInput.addEventListener(
+        "input",
+        function () {
+
+            const exactMatch = countries.find(
+                function (country) {
+
+                    return normalize(country.name) ===
+                        normalize(countryInput.value);
+
+                }
+            );
+
+
+            if (
+                selectedCountry &&
+                (!exactMatch ||
+                    String(exactMatch.id) !==
+                    String(selectedCountry.id))
+            ) {
+
+                selectedCountry = null;
+
+                countrySelect.value = "";
+
+                selectedCity = null;
+
+                citySelect.value = "";
+
+                cities = [];
+
+                cityInput.value = "";
+
+                cityInput.disabled = true;
+
+                cityInput.placeholder =
+                    "Сначала выберите страну";
+
+            }
+
+            showSuggestions(
+                countryInput,
+                countrySuggestions,
+                countries,
+                selectCountry
+            );
+
+        }
+    );
+
+    countryInput.addEventListener(
+        "focus",
+        function () {
+
+            showSuggestions(
+                countryInput,
+                countrySuggestions,
+                countries,
+                selectCountry
+            );
+
+        }
+    );
+
+    cityInput.addEventListener(
+        "input",
+        function () {
+
+            const exactMatch = cities.find(
+                function (city) {
+
+                    return normalize(city.name) ===
+                        normalize(cityInput.value);
+
+                }
+            );
+
+            if (
+                selectedCity &&
+                (!exactMatch ||
+                    String(exactMatch.id) !==
+                    String(selectedCity.id))
+            ) {
+
+                selectedCity = null;
+
+                citySelect.value = "";
+
+            }
+
+            showSuggestions(
+                cityInput,
+                citySuggestions,
+                cities,
+                selectCity
+            );
+
+        }
+    );
+
+    cityInput.addEventListener(
+        "focus",
+        function () {
+
+            if (cityInput.disabled) {
                 return;
             }
 
-            citySelect.disabled = true;
+            showSuggestions(
+                cityInput,
+                citySuggestions,
+                cities,
+                selectCity
+            );
+        }
+    );
 
-            const loadingOption = document.createElement("option");
+    document.addEventListener(
+        "click",
+        function (event) {
 
-            loadingOption.value = "";
-            loadingOption.textContent = "Загрузка городов...";
+            if (
+                !countryInput.contains(event.target) &&
+                !countrySuggestions.contains(event.target)
+            ) {
 
-            citySelect.appendChild(loadingOption);
+                closeSuggestions(countrySuggestions);
+
+            }
+            if (
+                !cityInput.contains(event.target) &&
+                !citySuggestions.contains(event.target)
+            ) {
+
+                closeSuggestions(citySuggestions);
+
+            }
+        }
+    );
+
+    countryInput.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (event.key === "Escape") {
+
+                closeSuggestions(countrySuggestions);
+
+                countryInput.blur();
+
+            }
+
+        }
+    );
+
+    cityInput.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (event.key === "Escape") {
+
+                closeSuggestions(citySuggestions);
+
+                cityInput.blur();
+
+            }
+
+        }
+    );
+
+    if (countrySelect.value) {
+
+        const existingCountry =
+            countries.find(function (country) {
+
+                return String(country.id) ===
+                    String(countrySelect.value);
+
+            });
 
 
-            fetch(
-                "{% url 'cities_by_country' %}?country_id=" + countryId
-            )
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error(
-                            "Не удалось загрузить города"
-                        );
-                    }
+        if (existingCountry) {
 
-                    return response.json();
-                })
-                .then(function (data) {
-                    citySelect.innerHTML = "";
+            selectedCountry = existingCountry;
 
-                    const defaultOption = document.createElement(
-                        "option"
-                    );
+            countryInput.value =
+                existingCountry.name;
 
-                    defaultOption.value = "";
-                    defaultOption.textContent = "Выберите город";
+            selectCountry(existingCountry);
 
-                    citySelect.appendChild(defaultOption);
+        }
+
+    } else {
+
+        cityInput.disabled = true;
+
+        cityInput.placeholder =
+            "Сначала выберите страну";
+
+    }
+
+    form.addEventListener(
+        "submit",
+        function (event) {
+
+            const countryValue =
+                countrySelect.value;
+
+            const cityValue =
+                citySelect.value;
 
 
-                    data.cities.forEach(function (city) {
-                        const option = document.createElement(
-                            "option"
-                        );
+            if (!countryValue) {
 
-                        option.value = city.id;
-                        option.textContent = city.name;
+                event.preventDefault();
+                countryInput.focus();
 
-                        citySelect.appendChild(option);
-                    });
+                showSuggestions(
+                    countryInput,
+                    countrySuggestions,
+                    countries,
+                    selectCountry
+                );
+                return;
+            }
 
-                    citySelect.disabled = data.cities.length === 0;
-                })
-                .catch(function () {
-                    citySelect.innerHTML = "";
+            if (!cityValue) {
 
-                    const errorOption = document.createElement(
-                        "option"
-                    );
+                event.preventDefault();
 
-                    errorOption.value = "";
-                    errorOption.textContent =
-                        "Не удалось загрузить города";
+                cityInput.focus();
 
-                    citySelect.appendChild(errorOption);
+                showSuggestions(
+                    cityInput,
+                    citySuggestions,
+                    cities,
+                    selectCity
+                );
+            }
+        }
+    );
 
-                    citySelect.disabled = true;
-                });
-        });
-    });
+});
+
 </script>
 
 {% endblock %}

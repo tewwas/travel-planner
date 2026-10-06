@@ -23,33 +23,39 @@ class TripForm(forms.ModelForm):
                     "placeholder": "Например, Летняя поездка",
                 }
             ),
+
             "country": forms.Select(
                 attrs={
                     "class": "form-control",
                 }
             ),
+
             "city": forms.Select(
                 attrs={
                     "class": "form-control",
                 }
             ),
+
             "start_date": forms.DateInput(
                 attrs={
                     "class": "form-control",
                     "type": "date",
                 }
             ),
+
             "end_date": forms.DateInput(
                 attrs={
                     "class": "form-control",
                     "type": "date",
                 }
             ),
+
             "budget": forms.NumberInput(
                 attrs={
                     "class": "form-control",
                     "placeholder": "Например, 100000",
                     "min": "0",
+                    "step": "1000",
                 }
             ),
         }
@@ -62,7 +68,6 @@ class TripForm(forms.ModelForm):
 
         self.fields["city"].empty_label = "Сначала выберите страну"
 
-       
         if self.instance and self.instance.pk and self.instance.country_id:
             self.fields["city"].queryset = City.objects.filter(
                 country=self.instance.country
@@ -77,10 +82,13 @@ class TripForm(forms.ModelForm):
             if country_id:
                 try:
                     country_id = int(country_id)
+
                     self.fields["city"].queryset = City.objects.filter(
                         country_id=country_id
                     )
+
                     self.fields["city"].empty_label = "Выберите город"
+
                 except (TypeError, ValueError):
                     self.fields["city"].queryset = City.objects.none()
 
