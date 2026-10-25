@@ -1,0 +1,47 @@
+
+{% extends "trips/base.html" %}
+
+{% block title %}Вход — Travel Planner{% endblock %}
+
+{% block content %}
+<section class="page-intro">
+    <div>
+        <p class="eyebrow">Travel Planner</p>
+        <h1>Вход</h1>
+        <p class="subtitle">Войди в аккаунт, чтобы открыть свои поездки.</p>
+    </div>
+</section>
+
+<section class="form-card">
+    {% if form.errors %}
+        <p class="message">
+            Не удалось войти. Проверь имя пользователя и пароль.
+        </p>
+    {% endif %}
+
+    {% if next %}
+        {% if user.is_authenticated %}
+            <p>У твоего аккаунта нет доступа к этой странице.</p>
+        {% else %}
+            <p>Войди, чтобы продолжить.</p>
+        {% endif %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <input type="hidden" name="next" value="{{ next }}">
+
+        {{ form.as_p }}
+
+        <button type="submit" class="button">
+            Войти
+        </button>
+    </form>
+
+    <p>
+        Ещё нет аккаунта?
+        <a href="{% url 'register' %}">Зарегистрироваться</a>
+    </p>
+</section>
+{% endblock %}

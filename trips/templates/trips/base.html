@@ -1,52 +1,55 @@
+
 {% load static %}
 
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Travel Planner{% endblock %}</title>
 
-    <title>
-        {% block title %}
-            Travel Planner
-        {% endblock %}
-    </title>
-
-    <link
-        rel="stylesheet"
-        href="{% static 'trips/style.css' %}">
+    <link rel="stylesheet" href="{% static 'trips/style.css' %}">
 </head>
-
 <body>
 
 <header class="header">
     <div class="container header-inner">
-        <a
-            href="{% url 'trip_list' %}"
-            class="logo">
+        <a href="{% url 'trip_list' %}" class="logo">
             Travel Planner
         </a>
 
         <nav class="navigation">
-            <a
-                href="{% url 'trip_list' %}"
-                class="navigation-link">
-                Мои поездки
-            </a>
+            {% if user.is_authenticated %}
+                <span class="navigation-link">
+                    Привет, {{ user.username }}!
+                </span>
 
-            <a
-                href="{% url 'trip_create' %}"
-                class="button button-small">
-                Новая поездка
-            </a>
+                <a href="{% url 'trip_list' %}" class="navigation-link">
+                    Мои поездки
+                </a>
 
+                <a href="{% url 'trip_create' %}" class="button button-small">
+                    Новая поездка
+                </a>
+
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="button button-small">
+                        Выйти
+                    </button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="navigation-link">
+                    Войти
+                </a>
+
+                <a href="{% url 'register' %}" class="button button-small">
+                    Регистрация
+                </a>
+            {% endif %}
         </nav>
     </div>
-
 </header>
 
 <main class="main">
@@ -54,30 +57,20 @@
         {% if messages %}
             <div class="messages">
                 {% for message in messages %}
-                    <div class="message">
-                        {{ message }}
-                    </div>
+                    <div class="message">{{ message }}</div>
                 {% endfor %}
             </div>
-
         {% endif %}
 
-        {% block content %}
-        {% endblock %}
-
+        {% block content %}{% endblock %}
     </div>
-
 </main>
-
 
 <footer class="footer">
     <div class="container">
-        <p>
-            Travel Planner
-        </p>
+        <p>Travel Planner</p>
     </div>
 </footer>
 
 </body>
-
 </html>

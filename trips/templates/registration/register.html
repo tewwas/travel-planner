@@ -1,0 +1,31 @@
+
+{% extends "trips/base.html" %}
+
+{% block title %}Регистрация — Travel Planner{% endblock %}
+
+{% block content %}
+<section class="page-intro">
+    <div>
+        <p class="eyebrow">Travel Planner</p>
+        <h1>Регистрация</h1>
+        <p class="subtitle">Создай аккаунт, чтобы планировать свои поездки.</p>
+    </div>
+</section>
+
+<section class="form-card">
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit" class="button">
+            Создать аккаунт
+        </button>
+    </form>
+
+    <p>
+        Уже есть аккаунт?
+        <a href="{% url 'login' %}">Войти</a>
+    </p>
+</section>
+{% endblock %}

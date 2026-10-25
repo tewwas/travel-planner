@@ -1,0 +1,238 @@
+[1mdiff --git a/config/settings.py b/config/settings.py[m
+[1mindex 2df6c0b..e91dbf2 100644[m
+[1m--- a/config/settings.py[m
+[1m+++ b/config/settings.py[m
+[36m@@ -20,7 +20,11 @@[m [mDEBUG = os.environ.get([m
+ ).lower() == "true"[m
+ [m
+ [m
+[31m-ALLOWED_HOSTS = ["teawasfound.pythonanywhere.com"][m
+[32m+[m[32mALLOWED_HOSTS = [[m
+[32m+[m[32m    "127.0.0.1",[m
+[32m+[m[32m    "localhost",[m
+[32m+[m[32m    "teawasfound.pythonanywhere.com",[m
+[32m+[m[32m][m
+ [m
+ [m
+ RENDER_EXTERNAL_HOSTNAME = os.environ.get([m
+[1mdiff --git a/trips/forms.py b/trips/forms.py[m
+[1mindex dc1ab43..a37cc7c 100644[m
+[1m--- a/trips/forms.py[m
+[1m+++ b/trips/forms.py[m
+[36m@@ -23,33 +23,39 @@[m [mclass TripForm(forms.ModelForm):[m
+                     "placeholder": "Например, Летняя поездка",[m
+                 }[m
+             ),[m
+[32m+[m
+             "country": forms.Select([m
+                 attrs={[m
+                     "class": "form-control",[m
+                 }[m
+             ),[m
+[32m+[m
+             "city": forms.Select([m
+                 attrs={[m
+                     "class": "form-control",[m
+                 }[m
+             ),[m
+[32m+[m
+             "start_date": forms.DateInput([m
+                 attrs={[m
+                     "class": "form-control",[m
+                     "type": "date",[m
+                 }[m
+             ),[m
+[32m+[m
+             "end_date": forms.DateInput([m
+                 attrs={[m
+                     "class": "form-control",[m
+                     "type": "date",[m
+                 }[m
+             ),[m
+[32m+[m
+             "budget": forms.NumberInput([m
+                 attrs={[m
+                     "class": "form-control",[m
+                     "placeholder": "Например, 100000",[m
+                     "min": "0",[m
+[32m+[m[32m                    "step": "1000",[m
+                 }[m
+             ),[m
+         }[m
+[36m@@ -62,7 +68,6 @@[m [mclass TripForm(forms.ModelForm):[m
+ [m
+         self.fields["city"].empty_label = "Сначала выберите страну"[m
+ [m
+[31m-       [m
+         if self.instance and self.instance.pk and self.instance.country_id:[m
+             self.fields["city"].queryset = City.objects.filter([m
+                 country=self.instance.country[m
+[36m@@ -77,10 +82,13 @@[m [mclass TripForm(forms.ModelForm):[m
+             if country_id:[m
+                 try:[m
+                     country_id = int(country_id)[m
+[32m+[m
+                     self.fields["city"].queryset = City.objects.filter([m
+                         country_id=country_id[m
+                     )[m
+[32m+[m
+                     self.fields["city"].empty_label = "Выберите город"[m
+[32m+[m
+                 except (TypeError, ValueError):[m
+                     self.fields["city"].queryset = City.objects.none()[m
+ [m
+[1mdiff --git a/trips/templates/trips/trip_form.html b/trips/templates/trips/trip_form.html[m
+[1mindex 3c8d2bf..b95e1dc 100644[m
+[1m--- a/trips/templates/trips/trip_form.html[m
+[1m+++ b/trips/templates/trips/trip_form.html[m
+[36m@@ -1,5 +1,4 @@[m
+ {% extends "trips/base.html" %}[m
+[31m-[m
+ {% load static %}[m
+ [m
+ [m
+[36m@@ -28,17 +27,15 @@[m
+     <form[m
+         method="post"[m
+         class="trip-form"[m
+[31m-    >[m
+[32m+[m[32m        id="trip-form">[m
+ [m
+         {% csrf_token %}[m
+ [m
+ [m
+         {% if form.non_field_errors %}[m
+[31m-[m
+             <div class="form-errors">[m
+                 {{ form.non_field_errors }}[m
+             </div>[m
+[31m-[m
+         {% endif %}[m
+ [m
+ [m
+[36m@@ -51,11 +48,9 @@[m
+             {{ form.title }}[m
+ [m
+             {% if form.title.errors %}[m
+[31m-[m
+                 <div class="field-error">[m
+                     {{ form.title.errors }}[m
+                 </div>[m
+[31m-[m
+             {% endif %}[m
+ [m
+         </div>[m
+[36m@@ -63,39 +58,72 @@[m
+ [m
+         <div class="form-row">[m
+ [m
+[31m-            <div class="form-group">[m
+[32m+[m[32m            <div class="form-group autocomplete-group">[m
+ [m
+[31m-                <label for="{{ form.country.id_for_label }}">[m
+[32m+[m[32m                <label for="country-autocomplete">[m
+                     Страна[m
+                 </label>[m
+ [m
+[31m-                {{ form.country }}[m
+[32m+[m[32m                <div class="autocomplete-wrapper">[m
+ [m
+[31m-                {% if form.country.errors %}[m
+[32m+[m[32m                    <input[m
+[32m+[m[32m                        type="text"[m
+[32m+[m[32m                        id="country-autocomplete"[m
+[32m+[m[32m                        class="form-control"[m
+[32m+[m[32m                        placeholder="Начните вводить страну"[m
+[32m+[m[32m                        autocomplete="off">[m
+[32m+[m
+[32m+[m[32m                    <div[m
+[32m+[m[32m                        id="country-suggestions"[m
+[32m+[m[32m                        class="autocomplete-suggestions"[m
+[32m+[m[32m                    ></div>[m
+ [m
+[32m+[m[32m                </div>[m
+[32m+[m
+[32m+[m[32m                <div class="hidden-select">[m
+[32m+[m[32m                    {{ form.country }}[m
+[32m+[m[32m                </div>[m
+[32m+[m
+[32m+[m[32m                {% if form.country.errors %}[m
+                     <div class="field-error">[m
+                         {{ form.country.errors }}[m
+                     </div>[m
+[31m-[m
+                 {% endif %}[m
+ [m
+             </div>[m
+ [m
+ [m
+[31m-            <div class="form-group">[m
+[32m+[m[32m            <div class="form-group autocomplete-group">[m
+ [m
+[31m-                <label for="{{ form.city.id_for_label }}">[m
+[32m+[m[32m                <label for="city-autocomplete">[m
+                     Город[m
+                 </label>[m
+ [m
+[31m-                {{ form.city }}[m
+[32m+[m[32m                <div class="autocomplete-wrapper">[m
+ [m
+[31m-                {% if form.city.errors %}[m
+[32m+[m[32m                    <input[m
+[32m+[m[32m                        type="text"[m
+[32m+[m[32m                        id="city-autocomplete"[m
+[32m+[m[32m                        class="form-control"[m
+[32m+[m[32m                        placeholder="Сначала выберите страну"[m
+[32m+[m[32m                        autocomplete="off"[m
+[32m+[m[32m                        disabled>[m
+ [m
+[32m+[m[32m                    <div[m
+[32m+[m[32m                        id="city-suggestions"[m
+[32m+[m[32m                        class="autocomplete-suggestions"[m
+[32m+[m[32m                    ></div>[m
+[32m+[m
+[32m+[m[32m                </div>[m
+[32m+[m
+[32m+[m[32m                <div class="hidden-select">[m
+[32m+[m[32m                    {{ form.city }}[m
+[32m+[m[32m                </div>[m
+[32m+[m
+[32m+[m[32m                {% if form.city.errors %}[m
+                     <div class="field-error">[m
+                         {{ form.city.errors }}[m
+                     </div>[m
+[31m-[m
+                 {% endif %}[m
+ [m
+             </div>[m
+[36m@@ -114,11 +142,9 @@[m
+                 {{ form.start_date }}[m
+ [m
+                 {% if form.start_date.errors %}[m
+[31m-[m
+                     <div class="field-error">[m
+                         {{ form.start_date.errors }}[m
+                     </div>[m
+[31m-[m
+                 {% endif %}[m
+ [m
+             </div>[m
+[36m@@ -133,11 +159,9 @@[m
+                 {{ form.end_date }}[m
+ [m
+                 {% if form.end_date.errors %}[m
+[31m-[m
+                     <div class="field-error">[m
+                         {{ form.end_date.errors }}[m
+                     </div>[m
+[31m-[m
+                 {% endif %}[m
+ [m
+             </div>[m
+[36m@@ -154,11 +178,9 @@[m
+             {{ form.budget }}[m
+ [m
+             {% if form.budget.errors %}[m
+[31m-[m
+                 <div class="field-error">[m
+  

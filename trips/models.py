@@ -46,6 +46,15 @@ class City(models.Model):
 
 
 class Trip(models.Model):
+    owner = models.ForeignKey(
+        "auth.User",
+        on_delete=models.CASCADE,
+        related_name="trips",
+        null=True,
+        blank=True,
+        verbose_name="Владелец",
+    )
+        
     title = models.CharField(
         max_length=100,
         verbose_name="Название поездки",
