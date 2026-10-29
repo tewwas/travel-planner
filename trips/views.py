@@ -8,7 +8,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from .forms import TripForm
-from .models import City, PackingItem, Trip
+from .models import City, Expense, PackingItem, Trip
+from django.db.models import Sum
 
 
 def register(request):
@@ -57,6 +58,12 @@ def trip_detail(request, pk):
     packing_items = trip.packing_items.all()
     total_items = packing_items.count()
     packed_items = packing_items.filter(is_packed=True).count()
+    expenses = trip.expenses.all()
+    total_spent = expenses.aggregate(
+        total=Sum("amount")
+    )["total"] or 0
+
+    remaining_budget = trip.budget - total_spent
 
     return render(
         request,
@@ -66,6 +73,9 @@ def trip_detail(request, pk):
             "packing_items": packing_items,
             "total_items": total_items,
             "packed_items": packed_items,
+                        "expenses": expenses,
+            "total_spent": total_spent,
+            "remaining_budget": remaining_budget,
         },
     )
 
@@ -251,3 +261,34 @@ def packing_item_delete(request, pk):
         })
 
     return redirect("trip_detail", pk=trip_pk)
+
+@login_required
+@require_POST
+def expense_add(request, pk):
+    trip = get_object_or_404(
+        Trip,
+        pk=pk,
+        owner=request.user,
+    )
+
+    description = request.POST.get("description", "").strip()
+    amount_text = request.POST.get("amount", "").strip()
+
+    try:
+        amount = int(amount_text)
+    except (TypeError, ValueError):
+        amount = 0
+
+    if description and 0 < amount <= 1000000000:
+        Expense.objects.create(
+            trip=trip,
+            description=description,
+            amount=amount,
+        )
+    else:
+        messages.error(
+            request,
+            "Введи описание и положительную сумму расхода.",
+        )
+
+    return redirect("trip_detail", pk=trip.pk)

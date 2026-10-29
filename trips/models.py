@@ -155,3 +155,33 @@ class PackingItem(models.Model):
 
     def __str__(self):
         return self.name
+
+class Expense(models.Model):
+    trip = models.ForeignKey(
+        Trip,
+        on_delete=models.CASCADE,
+        related_name="expenses",
+        verbose_name="Поездка",
+    )
+
+    description = models.CharField(
+        max_length=200,
+        verbose_name="Описание расхода",
+    )
+
+    amount = models.PositiveIntegerField(
+        verbose_name="Сумма, ₽",
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Дата расхода",
+    )
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Расход"
+        verbose_name_plural = "Расходы"
+
+    def __str__(self):
+        return f"{self.description} — {self.amount} ₽"

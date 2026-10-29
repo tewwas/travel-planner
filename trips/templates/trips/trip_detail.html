@@ -61,6 +61,79 @@
 
     </div>
 
+    <section class="packing-section">
+    <p class="detail-label">Финансы</p>
+    <h2>Бюджет поездки</h2>
+
+    <div class="detail-info">
+        <div class="detail-row">
+            <span>Исходный бюджет</span>
+            <strong>{{ trip.budget }} ₽</strong>
+        </div>
+
+        <div class="detail-row">
+            <span>Потрачено</span>
+            <strong>{{ total_spent }} ₽</strong>
+        </div>
+
+        <div class="detail-row">
+            <span>Осталось</span>
+            <strong>{{ remaining_budget }} ₽</strong>
+        </div>
+    </div>
+
+    <h3>Добавить расход</h3>
+
+    <form
+        method="post"
+        action="{% url 'expense_add' trip.pk %}"
+        class="packing-form">
+
+        {% csrf_token %}
+
+        <input
+            type="text"
+            name="description"
+            placeholder="Например, купили сувениры"
+            maxlength="200"
+            required>
+
+        <input
+            type="number"
+            name="amount"
+            placeholder="Сумма в рублях"
+            min="1"
+            max="1000000000"
+            step="1"
+            required>
+
+        <button type="submit" class="button">
+            Добавить расход
+        </button>
+    </form>
+
+    <h3>История расходов</h3>
+
+    {% if expenses %}
+        <div class="packing-list">
+            {% for expense in expenses %}
+                <div class="packing-item">
+                    <span class="packing-name">
+                        {{ expense.description }}
+                        <small>
+                            {{ expense.created_at|date:"d.m.Y H:i" }}
+                        </small>
+                    </span>
+
+                    <strong>−{{ expense.amount }} ₽</strong>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Пока расходов нет.</p>
+    {% endif %}
+</section>
+
 
     <section class="packing-section">
 
@@ -88,13 +161,11 @@
 
 
         <div class="packing-progress-bar">
-
             <div
                 class="packing-progress-fill"
                 id="packing-progress-fill"
-                style="width: {% if total_items %}{{ packed_items|floatformat:0 }}{% else %}0{% endif %}0%;"
-            ></div>
-
+                style="width: {% if total_items > 0 %}{% widthratio packed_items total_items 100 %}{% else %}0{% endif %}%;">
+            </div>
         </div>
 
 
@@ -226,7 +297,28 @@
 
 
     <div class="detail-actions">
-
+        <a href="https://www.aviasales.ru/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="
+                display: inline-block;
+                background-color: #2864f0;
+                color: #ffffff;
+                padding: 16px 24px;
+                border-radius: 12px;
+                text-decoration: none;
+                font-weight: 600;
+                border: none;
+            ">
+                Найти авиабилеты
+            </a>
+        <a
+            href="https://www.google.com/maps/search/?api=1&amp;query={{ trip.city.name|urlencode }}%2C%20{{ trip.country.name|urlencode }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="button button-secondary">
+            Открыть на Google Maps
+        </a>
         <a
             href="{% url 'trip_update' trip.pk %}"
             class="button">

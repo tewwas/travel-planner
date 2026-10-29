@@ -1,4 +1,3 @@
-
 {% extends "trips/base.html" %}
 
 {% block title %}Вход — Travel Planner{% endblock %}
@@ -41,7 +40,9 @@
 
     <p>
         Ещё нет аккаунта?
-        <a href="{% url 'register' %}">Зарегистрироваться</a>
+        <a href="{% url 'register' %}" class="card-link">
+            Зарегистрироваться
+        </a>
     </p>
 </section>
 {% endblock %}

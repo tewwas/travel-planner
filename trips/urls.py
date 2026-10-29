@@ -1,6 +1,5 @@
 
 from django.urls import path
-
 from . import views
 
 
@@ -30,4 +29,9 @@ urlpatterns = [
         views.packing_item_delete,
         name="packing_item_delete",
     ),
+    path(
+            "trips/<int:pk>/expenses/add/",
+            views.expense_add,
+            name="expense_add",
+        ),
 ]
