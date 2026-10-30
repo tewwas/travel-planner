@@ -1,0 +1,973 @@
+[
+{
+  "model": "trips.country",
+  "pk": 1,
+  "fields": {
+    "name": "Италия"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 2,
+  "fields": {
+    "name": "Франция"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 3,
+  "fields": {
+    "name": "Испания"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 4,
+  "fields": {
+    "name": "Германия"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 5,
+  "fields": {
+    "name": "Португалия"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 6,
+  "fields": {
+    "name": "Греция"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 7,
+  "fields": {
+    "name": "Турция"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 8,
+  "fields": {
+    "name": "Таиланд"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 9,
+  "fields": {
+    "name": "Япония"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 10,
+  "fields": {
+    "name": "Южная Корея"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 11,
+  "fields": {
+    "name": "ОАЭ"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 12,
+  "fields": {
+    "name": "Египет"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 13,
+  "fields": {
+    "name": "США"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 14,
+  "fields": {
+    "name": "Великобритания"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 15,
+  "fields": {
+    "name": "Чехия"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 16,
+  "fields": {
+    "name": "Нидерланды"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 17,
+  "fields": {
+    "name": "Австрия"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 18,
+  "fields": {
+    "name": "Швейцария"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 19,
+  "fields": {
+    "name": "Грузия"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 20,
+  "fields": {
+    "name": "Армения"
+  }
+},
+{
+  "model": "trips.country",
+  "pk": 21,
+  "fields": {
+    "name": "Россия"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 1,
+  "fields": {
+    "country": 1,
+    "name": "Рим"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 2,
+  "fields": {
+    "country": 1,
+    "name": "Милан"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 3,
+  "fields": {
+    "country": 1,
+    "name": "Венеция"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 4,
+  "fields": {
+    "country": 1,
+    "name": "Флоренция"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 5,
+  "fields": {
+    "country": 1,
+    "name": "Неаполь"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 6,
+  "fields": {
+    "country": 2,
+    "name": "Париж"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 7,
+  "fields": {
+    "country": 2,
+    "name": "Ницца"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 8,
+  "fields": {
+    "country": 2,
+    "name": "Лион"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 9,
+  "fields": {
+    "country": 2,
+    "name": "Марсель"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 10,
+  "fields": {
+    "country": 2,
+    "name": "Бордо"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 11,
+  "fields": {
+    "country": 3,
+    "name": "Мадрид"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 12,
+  "fields": {
+    "country": 3,
+    "name": "Барселона"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 13,
+  "fields": {
+    "country": 3,
+    "name": "Валенсия"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 14,
+  "fields": {
+    "country": 3,
+    "name": "Севилья"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 15,
+  "fields": {
+    "country": 3,
+    "name": "Малага"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 16,
+  "fields": {
+    "country": 4,
+    "name": "Берлин"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 17,
+  "fields": {
+    "country": 4,
+    "name": "Мюнхен"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 18,
+  "fields": {
+    "country": 4,
+    "name": "Гамбург"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 19,
+  "fields": {
+    "country": 4,
+    "name": "Кёльн"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 20,
+  "fields": {
+    "country": 4,
+    "name": "Франкфурт"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 21,
+  "fields": {
+    "country": 5,
+    "name": "Лиссабон"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 22,
+  "fields": {
+    "country": 5,
+    "name": "Порту"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 23,
+  "fields": {
+    "country": 5,
+    "name": "Фару"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 24,
+  "fields": {
+    "country": 6,
+    "name": "Афины"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 25,
+  "fields": {
+    "country": 6,
+    "name": "Салоники"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 26,
+  "fields": {
+    "country": 6,
+    "name": "Ираклион"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 27,
+  "fields": {
+    "country": 6,
+    "name": "Родос"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 28,
+  "fields": {
+    "country": 7,
+    "name": "Стамбул"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 29,
+  "fields": {
+    "country": 7,
+    "name": "Анталья"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 30,
+  "fields": {
+    "country": 7,
+    "name": "Измир"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 31,
+  "fields": {
+    "country": 7,
+    "name": "Анкара"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 32,
+  "fields": {
+    "country": 7,
+    "name": "Бодрум"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 33,
+  "fields": {
+    "country": 8,
+    "name": "Бангкок"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 34,
+  "fields": {
+    "country": 8,
+    "name": "Пхукет"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 35,
+  "fields": {
+    "country": 8,
+    "name": "Чиангмай"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 36,
+  "fields": {
+    "country": 8,
+    "name": "Паттайя"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 37,
+  "fields": {
+    "country": 9,
+    "name": "Токио"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 38,
+  "fields": {
+    "country": 9,
+    "name": "Киото"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 39,
+  "fields": {
+    "country": 9,
+    "name": "Осака"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 40,
+  "fields": {
+    "country": 9,
+    "name": "Нара"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 41,
+  "fields": {
+    "country": 9,
+    "name": "Хиросима"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 42,
+  "fields": {
+    "country": 10,
+    "name": "Сеул"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 43,
+  "fields": {
+    "country": 10,
+    "name": "Пусан"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 44,
+  "fields": {
+    "country": 10,
+    "name": "Инчхон"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 45,
+  "fields": {
+    "country": 10,
+    "name": "Тэгу"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 46,
+  "fields": {
+    "country": 11,
+    "name": "Дубай"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 47,
+  "fields": {
+    "country": 11,
+    "name": "Абу-Даби"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 48,
+  "fields": {
+    "country": 11,
+    "name": "Шарджа"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 49,
+  "fields": {
+    "country": 12,
+    "name": "Каир"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 50,
+  "fields": {
+    "country": 12,
+    "name": "Хургада"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 51,
+  "fields": {
+    "country": 12,
+    "name": "Шарм-эш-Шейх"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 52,
+  "fields": {
+    "country": 12,
+    "name": "Александрия"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 53,
+  "fields": {
+    "country": 13,
+    "name": "Нью-Йорк"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 54,
+  "fields": {
+    "country": 13,
+    "name": "Лос-Анджелес"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 55,
+  "fields": {
+    "country": 13,
+    "name": "Майами"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 56,
+  "fields": {
+    "country": 13,
+    "name": "Сан-Франциско"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 57,
+  "fields": {
+    "country": 13,
+    "name": "Чикаго"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 58,
+  "fields": {
+    "country": 14,
+    "name": "Лондон"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 59,
+  "fields": {
+    "country": 14,
+    "name": "Эдинбург"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 60,
+  "fields": {
+    "country": 14,
+    "name": "Манчестер"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 61,
+  "fields": {
+    "country": 14,
+    "name": "Ливерпуль"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 62,
+  "fields": {
+    "country": 15,
+    "name": "Прага"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 63,
+  "fields": {
+    "country": 15,
+    "name": "Брно"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 64,
+  "fields": {
+    "country": 15,
+    "name": "Карловы Вары"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 65,
+  "fields": {
+    "country": 16,
+    "name": "Амстердам"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 66,
+  "fields": {
+    "country": 16,
+    "name": "Роттердам"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 67,
+  "fields": {
+    "country": 16,
+    "name": "Гаага"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 68,
+  "fields": {
+    "country": 16,
+    "name": "Утрехт"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 69,
+  "fields": {
+    "country": 17,
+    "name": "Вена"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 70,
+  "fields": {
+    "country": 17,
+    "name": "Зальцбург"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 71,
+  "fields": {
+    "country": 17,
+    "name": "Инсбрук"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 72,
+  "fields": {
+    "country": 18,
+    "name": "Цюрих"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 73,
+  "fields": {
+    "country": 18,
+    "name": "Женева"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 74,
+  "fields": {
+    "country": 18,
+    "name": "Берн"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 75,
+  "fields": {
+    "country": 18,
+    "name": "Люцерн"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 76,
+  "fields": {
+    "country": 19,
+    "name": "Тбилиси"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 77,
+  "fields": {
+    "country": 19,
+    "name": "Батуми"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 78,
+  "fields": {
+    "country": 19,
+    "name": "Кутаиси"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 79,
+  "fields": {
+    "country": 20,
+    "name": "Ереван"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 80,
+  "fields": {
+    "country": 20,
+    "name": "Дилижан"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 81,
+  "fields": {
+    "country": 20,
+    "name": "Гюмри"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 82,
+  "fields": {
+    "country": 21,
+    "name": "Москва"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 83,
+  "fields": {
+    "country": 21,
+    "name": "Санкт-Петербург"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 84,
+  "fields": {
+    "country": 21,
+    "name": "Краснодар"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 85,
+  "fields": {
+    "country": 21,
+    "name": "Сочи"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 86,
+  "fields": {
+    "country": 21,
+    "name": "Ростов-на-Дону"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 87,
+  "fields": {
+    "country": 21,
+    "name": "Казань"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 88,
+  "fields": {
+    "country": 21,
+    "name": "Екатеринбург"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 89,
+  "fields": {
+    "country": 21,
+    "name": "Новосибирск"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 90,
+  "fields": {
+    "country": 21,
+    "name": "Нижний Новгород"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 91,
+  "fields": {
+    "country": 21,
+    "name": "Самара"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 92,
+  "fields": {
+    "country": 21,
+    "name": "Воронеж"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 93,
+  "fields": {
+    "country": 21,
+    "name": "Волгоград"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 94,
+  "fields": {
+    "country": 21,
+    "name": "Уфа"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 95,
+  "fields": {
+    "country": 21,
+    "name": "Красноярск"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 96,
+  "fields": {
+    "country": 21,
+    "name": "Пермь"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 97,
+  "fields": {
+    "country": 21,
+    "name": "Омск"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 98,
+  "fields": {
+    "country": 21,
+    "name": "Челябинск"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 99,
+  "fields": {
+    "country": 21,
+    "name": "Тула"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 100,
+  "fields": {
+    "country": 21,
+    "name": "Тверь"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 101,
+  "fields": {
+    "country": 21,
+    "name": "Астрахань"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 102,
+  "fields": {
+    "country": 21,
+    "name": "Владивосток"
+  }
+},
+{
+  "model": "trips.city",
+  "pk": 103,
+  "fields": {
+    "country": 21,
+    "name": "Калининград"
+  }
+}
+]
